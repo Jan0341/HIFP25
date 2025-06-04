@@ -1,0 +1,29 @@
+Spalte,Anzahl eindeutiger Werte,Einzigartige Werte (Beispiele)
+BeneID,138556,"['BENE11001' 'BENE11002' 'BENE11003' 'BENE11004' 'BENE11005' 'BENE11006'
+ 'BENE11007' 'BENE11008' 'BENE11009' 'BENE11010']"
+DOB,900,"['1943-01-01' '1936-09-01' '1936-08-01' '1922-07-01' '1935-09-01'
+ '1976-09-01' '1940-09-01' '1934-02-01' '1929-06-01' '1936-07-01']"
+DOD,11,"['2009-12-01' '2009-09-01' '2009-05-01' '2009-07-01' '2009-08-01'
+ '2009-10-01' '2009-06-01' '2009-04-01' '2009-02-01' '2009-11-01']"
+Gender,2,[1 2]
+Race,4,[1 2 3 5]
+RenalDiseaseIndicator,2,['0' 'Y']
+State,52,[39 52 24 23 45 15 44 41  1 14]
+County,314,[230 280 590 270 680 810 610 140  30 360]
+NoOfMonths_PartACov,13,[12  0  3  7 10 11  8  4  1  6]
+NoOfMonths_PartBCov,13,[12  0  1  9 11  3 10  8  2  6]
+ChronicCond_Alzheimer,2,[1 2]
+ChronicCond_Heartfailure,2,[2 1]
+ChronicCond_KidneyDisease,2,[1 2]
+ChronicCond_Cancer,2,[2 1]
+ChronicCond_ObstrPulmonary,2,[2 1]
+ChronicCond_Depression,2,[1 2]
+ChronicCond_Diabetes,2,[1 2]
+ChronicCond_IschemicHeart,2,[1 2]
+ChronicCond_Osteoporasis,2,[2 1]
+ChronicCond_rheumatoidarthritis,2,[1 2]
+ChronicCond_stroke,2,[1 2]
+IPAnnualReimbursementAmt,3004,[ 36000      0   5000  21260  22000   8000   6000  23650 131140  30000]
+IPAnnualDeductibleAmt,147,[ 3204     0  1068  2136  6068  7068 10204  4272  2936  5340]
+OPAnnualReimbursementAmt,2078,[  60   30   90 1810 1790  500 1490  100 1170  250]
+OPAnnualDeductibleAmt,789,[  70   50   40  760 1200    0  160  660  320 1740]
