@@ -6,7 +6,7 @@ It is a machine learning pipeline designed and deployed on AWS, using an EC2 t3.
 The EC2 instance was responsible for executing all processing steps, including:
 
 ```mermaid
-graph TD
+graph LR
     A[Data Cleaning] --> B[Feature Engineering]
     B --> C[Preprocessing]
     C --> D[Model Training]
