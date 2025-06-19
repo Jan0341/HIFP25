@@ -10,7 +10,7 @@ graph TD
     A[Data Cleaning] --> B[Feature Engineering]
     B --> C[Preprocessing]
     C --> D[Model Training]
-    D --> E[Front-End \[Streamlit\]]
+    D --> E[Streamlit Front End]
 ```
 
 The main goal of the project was to build a predictive model capable of identifying potential health insurance fraud in the United States, particularly fraud committed by healthcare providers.
