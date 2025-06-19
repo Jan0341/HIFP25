@@ -5,11 +5,13 @@ It is a machine learning pipeline designed and deployed on AWS, using an EC2 t3.
 
 The EC2 instance was responsible for executing all processing steps, including:
 
+```mermaid
 graph TD
     A[Data Cleaning] --> B[Feature Engineering]
     B --> C[Preprocessing]
     C --> D[Model Training]
-    D --> E[Front-End Hosting (Streamlit)]
+    D --> E[Front-End (Streamlit)]
+```
 
 The main goal of the project was to build a predictive model capable of identifying potential health insurance fraud in the United States, particularly fraud committed by healthcare providers.
 
