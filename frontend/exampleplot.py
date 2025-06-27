@@ -224,6 +224,8 @@ colored_header(
 
 # OpenAI client
 
+client = OpenAI(api_key="INSERT_KEY_HERE")  # Replace with your OpenAI API key
+
 # Explanation generation with OpenAI (cached)
 @st.cache_data(show_spinner="Generating Report...")
 def generate_llm_explanation(feature_name, actual_value, existing_description):
