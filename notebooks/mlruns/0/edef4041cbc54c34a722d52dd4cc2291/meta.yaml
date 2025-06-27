@@ -1,0 +1,15 @@
+artifact_uri: file:///home/ec2-user/HIFP25/notebooks/mlruns/0/edef4041cbc54c34a722d52dd4cc2291/artifacts
+end_time: 1749298420493
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: edef4041cbc54c34a722d52dd4cc2291
+run_name: xgb_medicaid_fraud
+run_uuid: edef4041cbc54c34a722d52dd4cc2291
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1749298416220
+status: 3
+tags: []
+user_id: ec2-user

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare Fraud Detection System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-blue': '#0E7C86',
+                        'medical-teal': '#17BEBB',
+                        'medical-light': '#EDF7F6',
+                        'medical-dark': '#084C61',
+                        'medical-accent': '#FF6B35',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .gauge-container {
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+            position: relative;
+            padding: 0 10px;
+        }
+        
+        .gauge-body {
+            width: 100%;
+            height: 0;
+            padding-bottom: 50%;
+            position: relative;
+            border-top-left-radius: 100% 200%;
+            border-top-right-radius: 100% 200%;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+        
+        .gauge-fill {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: center top;
+            transform: rotate(0.5turn);
+            transition: transform 0.5s ease-out;
+        }
+        
+        .gauge-cover {
+            width: 55%;
+            height: 90%;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1) inset;
+        }
+        
+        .gauge-cover span {
+            color: #222;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .risk-low {
+            background: linear-gradient(to right, #4ade80, #a3e635);
+        }
+        
+        .risk-medium {
+            background: linear-gradient(to right, #f59e0b, #fbbf24);
+        }
+        
+        .risk-high {
+            background: linear-gradient(to right, #ef4444, #f87171);
+        }
+        
+        .wave {
+            animation: wave 8s linear infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            transform-origin: 50% 50%;
+            background-size: 50% 100%;
+            opacity: 0.7;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(0) translateZ(0) scaleY(1); }
+            50% { transform: translateX(-25%) translateZ(0) scaleY(0.9); }
+            100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-transition {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-medical-light to-white min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <img src="https://img.icons8.com/external-itim2101-flat-itim2101/128/external-ai-artificial-intelligence-itim2101-flat-itim2101-1.png" alt="AI Healthcare Logo" class="mx-auto mb-4 h-16 w-16">
+            <h1 class="text-3xl md:text-4xl font-bold text-medical-dark mb-2">Medicare Fraud Detection</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Advanced analytics to identify potential fraudulent healthcare providers</p>
+        </header>
+        
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden card-transition card-hover">
+            <div class="p-6">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <!-- Input Section -->
+                    <div class="w-full md:w-1/3">
+                        <h2 class="text-xl font-semibold text-medical-dark mb-4">Provider Analysis</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="providerId" class="block text-sm font-medium text-gray-700 mb-1">Provider ID</label>
+                                <input 
+                                    type="text" 
+                                    id="providerId" 
+                                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-medical-teal focus:border-transparent"
+                                    placeholder="Enter Provider ID"
+                                    value="PRV53275"
+                                >
+                                <p class="mt-1 text-xs text-gray-500">Example: PRV53275</p>
+                            </div>
+                            
+                            <button 
+                                id="analyzeBtn"
+                                class="w-full bg-medical-teal hover:bg-medical-blue text-white font-medium py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center"
+                            >
+                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="loadingSpinner">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Analyze Provider
+                            </button>
+                            
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h3 class="text-sm font-medium text-blue-800 mb-1">How it works</h3>
+                                <p class="text-xs text-blue-700">Our system analyzes billing patterns, claim statistics, and other factors to assess fraud risk using machine learning.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Section -->
+                    <div class="w-full md:w-2/3" id="resultsSection" style="display: none;">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold text-medical-dark">Risk Assessment</h2>
+                            <span id="riskBadge" class="px-3 py-1 rounded-full text-xs font-medium"></span>
+                        </div>
+                        
+                        <!-- Risk Gauge -->
+                        <div class="mb-8">
+                            <div class="gauge-container mb-4">
+                                <div class="gauge-body">
+                                    <div class="gauge-fill" id="gaugeFill">
+                                        <div class="wave" style="background-color: currentColor;"></div>
+                                    </div>
+                                    <div class="gauge-cover">
+                                        <span id="riskPercentage">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm font-medium text-gray-700">
+                                <span>Low Risk</span>
+                                <span>Medium Risk</span>
+                                <span>High Risk</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Provider Stats -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-1">Total Claims</h3>
+                                <p class="text-2xl font-bold text-medical-dark" id="totalClaims">0</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-1">Total Billed</h3>
+                                <p class="text-2xl font-bold text-medical-dark" id="totalBilled">$0</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-1">Avg Patient Age</h3>
+                                <p class="text-2xl font-bold text-medical-dark" id="avgAge">0</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-1">Top Diagnosis</h3>
+                                <p class="text-lg font-bold text-medical-dark" id="topDiagnosis">None</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Risk Factors -->
+                        <div>
+                            <h3 class="text-lg font-medium text-medical-dark mb-2">Top Risk Factors</h3>
+                            <div class="space-y-2" id="riskFactors">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Initial Placeholder -->
+                    <div class="w-full md:w-2/3 flex items-center justify-center bg-gray-50 rounded-lg" id="placeholderSection">
+                        <div class="text-center p-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <h3 class="text-lg font-medium text-gray-600 mb-2">No Analysis Yet</h3>
+                            <p class="text-gray-500">Enter a Provider ID and click "Analyze Provider" to see risk assessment results.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>© 2025 Medicare Fraud Detection System. This tool supports CMS fraud prevention efforts.</p>
+            <p class="mt-1"><a href="#" class="text-medical-teal hover:underline">Privacy Policy</a> | <a href="#" class="text-medical-teal hover:underline">Terms of Service</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const providerIdInput = document.getElementById('providerId');
+            const resultsSection = document.getElementById('resultsSection');
+            const placeholderSection = document.getElementById('placeholderSection');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            analyzeBtn.addEventListener('click', function() {
+                const providerId = providerIdInput.value.trim();
+                
+                // Simple validation
+                if (!providerId || !/^PRV\d{5}$/i.test(providerId)) {
+                    alert('Please enter a valid Provider ID in the format PRV followed by 5 digits (e.g., PRV53275)');
+                    return;
+                }
+                
+                // Show loading state
+                analyzeBtn.disabled = true;
+                loadingSpinner.classList.remove('hidden');
+                
+                // Simulate API call with timeout
+                setTimeout(function() {
+                    // Hide loading state
+                    analyzeBtn.disabled = false;
+                    loadingSpinner.classList.add('hidden');
+                    
+                    // Show results (in a real app, this would be based on actual API response)
+                    displayResults(providerId);
+                }, 1500);
+            });
+            
+            function displayResults(providerId) {
+                // Generate random data for demonstration
+                const fraudProbability = parseFloat((Math.random() * 0.9).toFixed(2)); // Random value between 0 and 0.9
+                const totalClaims = Math.floor(Math.random() * 5000) + 500;
+                const totalBilled = parseFloat((totalClaims * (300 + Math.random() * 200)).toFixed(2));
+                const avgPatientAge = parseFloat((40 + Math.random() * 40).toFixed(1));
+                
+                const diagnoses = [
+                    "Chronic kidney disease (N18.9)",
+                    "Type 2 diabetes (E11.9)",
+                    "Essential hypertension (I10)",
+                    "Coronary artery disease (I25.10)",
+                    "Major depressive disorder (F32.9)",
+                    "Osteoarthritis (M17.9)"
+                ];
+                
+                const riskFactorTemplates = [
+                    { text: "Excessive telehealth claims for routine care", range: [0.2, 0.5] },
+                    { text: "Rapid increase in billing over past 12 months", range: [0.15, 0.45] },
+                    { text: "High percentage of claims for unsupervised AI diagnostics", range: [0.1, 0.4] },
+                    { text: "Unusually high prescription of controlled substances", range: [0.25, 0.55] },
+                    { text: "Consistent late billing submissions", range: [0.1, 0.3] },
+                    { text: "High frequency of same-day multiple procedures", range: [0.3, 0.6] },
+                    { text: "Services performed by unsupervised assistants", range: [0.15, 0.35] }
+                ];
+                
+                // Randomly select 3-5 risk factors
+                const shuffledFactors = [...riskFactorTemplates].sort(() => 0.5 - Math.random());
+                const numFactors = 3 + Math.floor(Math.random() * 2); // 3-4 factors
+                const selectedFactors = shuffledFactors.slice(0, numFactors);
+                
+                const riskFactors = selectedFactors.map(f => ({
+                    factor: f.text,
+                    impact: parseFloat((f.range[0] + Math.random() * (f.range[1] - f.range[0])).toFixed(2))
+                }));
+                
+                // Sort factors by impact descending
+                riskFactors.sort((a, b) => b.impact - a.impact);
+                
+                const mockData = {
+                    providerId: providerId,
+                    fraudProbability: fraudProbability,
+                    totalClaims: totalClaims,
+                    totalBilled: totalBilled,
+                    avgPatientAge: avgPatientAge,
+                    topDiagnosis: diagnoses[Math.floor(Math.random() * diagnoses.length)],
+                    riskFactors: riskFactors
+                };
+                
+                // Update UI with mock data
+                const fraudPercentage = Math.round(mockData.fraudProbability * 100);
+                document.getElementById('riskPercentage').textContent = `${fraudPercentage}%`;
+                
+                // Set gauge fill
+                const gaugeFill = document.getElementById('gaugeFill');
+                gaugeFill.style.transform = `rotate(${0.5 + mockData.fraudProbability * 0.5}turn)`;
+                
+                // Set risk category and color
+                const riskBadge = document.getElementById('riskBadge');
+                if (mockData.fraudProbability > 0.7) {
+                    gaugeFill.className = 'gauge-fill risk-high';
+                    riskBadge.textContent = 'High Risk';
+                    riskBadge.className = 'px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800';
+                } else if (mockData.fraudProbability > 0.4) {
+                    gaugeFill.className = 'gauge-fill risk-medium';
+                    riskBadge.textContent = 'Medium Risk';
+                    riskBadge.className = 'px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
+                } else {
+                    gaugeFill.className = 'gauge-fill risk-low';
+                    riskBadge.textContent = 'Low Risk';
+                    riskBadge.className = 'px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800';
+                }
+                
+                // Update provider stats
+                document.getElementById('totalClaims').textContent = mockData.totalClaims.toLocaleString();
+                document.getElementById('totalBilled').textContent = `$${mockData.totalBilled.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('avgAge').textContent = mockData.avgPatientAge.toFixed(1);
+                document.getElementById('topDiagnosis').textContent = mockData.topDiagnosis;
+                
+                // Update risk factors
+                const riskFactorsContainer = document.getElementById('riskFactors');
+                riskFactorsContainer.innerHTML = '';
+                
+                mockData.riskFactors.forEach(factor => {
+                    const factorEl = document.createElement('div');
+                    factorEl.className = 'flex items-start gap-3 p-3 bg-gray-50 rounded-lg';
+                    
+                    const impactBar = document.createElement('div');
+                    impactBar.className = 'h-2 mt-1.5 bg-medical-accent rounded-full';
+                    impactBar.style.width = `${factor.impact * 100}%`;
+                    
+                    factorEl.innerHTML = `
+                        <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">${factor.factor}</h4>
+                            <div class="flex items-center gap-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="h-2 bg-medical-accent rounded-full" style="width: ${factor.impact * 100}%"></div>
+                                </div>
+                                <span class="text-xs font-medium text-gray-500">${(factor.impact * 100).toFixed(0)}% impact</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    riskFactorsContainer.appendChild(factorEl);
+                });
+                
+                // Show results and hide placeholder
+                placeholderSection.style.display = 'none';
+                resultsSection.style.display = 'block';
+                
+                // Add animation
+                resultsSection.classList.add('animate__animated', 'animate__fadeIn');
+            }
+            
+            // In a real app, you would have an actual API call:
+            /* 
+            async function analyzeProvider(providerId) {
+                try {
+                    const response = await fetch('https://your-api-endpoint.com/predict', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ provider_id: providerId }),
+                    });
+                    
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error analyzing provider:', error);
+                    return null;
+                }
+            }
+            */
+        });
+    </script>
+</body>
+</html>
