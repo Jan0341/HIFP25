@@ -173,3 +173,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 frontend/.streamlit/secrets.toml
+frontend/.streamlit/secrets.toml

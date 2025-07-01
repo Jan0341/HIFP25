@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.standard.operators.python import PythonOperator
 
 import pandas as pd
 import mlflow
@@ -9,10 +9,10 @@ import sys
 
 # === Add script directory to path for import ===
 sys.path.append("/home/ec2-user/HIFP25/scripts")
-from preprocessor_pandas import MedicarePreprocessorPandas
+from module_4_preprocessor_pandas import MedicarePreprocessorPandas
 
 # === Import your MLflow training function ===
-from ml_pipeline import train_and_log_model_with_mlflow  # Save the training code in this file
+from module_5_ml_pipeline import train_and_log_model_with_mlflow  # Save the training code in this file
 
 # === S3 Path and MLflow setup ===
 S3_PATH = "s3://medicare-fraud-data-25-05-2025/merged_ready/train/*.csv"
@@ -30,7 +30,7 @@ with DAG(
     default_args=default_args,
     description="Train and log Medicare fraud detection model",
     start_date=datetime(2025, 6, 24),
-    schedule_interval=None,  # On-demand
+    
     catchup=False
 ) as dag:
 
